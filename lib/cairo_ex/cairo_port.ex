@@ -27,8 +27,30 @@ defmodule CairoEx.CairoPort do
     {:ok, %{port: port}}
   end
 
-  def command(ps, cmd) do
-    GenServer.call(ps, {:command, cmd})
+  def command(port, cmd) do
+    port
+    |> GenServer.call({:command, cmd})
+    |> handle_command_result()
+  end
+
+  defp handle_command_result({:error, :cx_invalid_reference}) do
+    raise CairoEx.Error, message: "Invalid reference"
+  end
+
+  defp handle_command_result({:error, :cx_unknown_cmd}) do
+    raise CairoEx.Error, message: "Unknown command"
+  end
+
+  defp handle_command_result({:error, :cx_decode}) do
+    raise CairoEx.Error, message: "Command decoding error"
+  end
+
+  defp handle_command_result({:error, :cx_encode}) do
+    raise CairoEx.Error, message: "Command encoding error"
+  end
+
+  defp handle_command_result(result) do
+    result
   end
 
   @impl true
