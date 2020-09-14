@@ -1,6 +1,40 @@
 # CairoEx
 
-**TODO: Add description**
+Cairo wrapper for Elixir.
+
+*(WORK IN PROGRESS)*
+
+## Usage
+```elixir
+  {:ok, cairo} = CairoEx.start_link()
+
+  {:ok, surface} = Surface.image_surface_create(cairo, :rgb24, 270, 270)
+  {:ok, context} = Context.create(surface)
+
+  context
+  |> Context.set_source_rgb(1.0, 1.0, 1.0)
+  |> Context.paint()
+  |> Context.set_source_rgb(0.5, 0.5, 1)
+  |> Context.rectangle(20, 20, 100, 100)
+  |> Context.fill()
+  |> Context.set_source_rgb(0.6, 0.6, 0.6)
+  |> Context.rectangle(150, 20, 100, 100)
+  |> Context.fill()
+  |> Context.set_source_rgb(0, 0.3, 0)
+  |> Context.rectangle(20, 140, 100, 100)
+  |> Context.fill()
+  |> Context.set_source_rgb(1, 0, 0.5)
+  |> Context.rectangle(150, 140, 100, 100)
+  |> Context.fill()
+
+  :ok = Surface.write_to_png(surface, "/tmp/output.png")
+  :ok = Surface.destroy(surface)
+```
+
+Output:
+
+![Result image](img/rects.png)
+
 
 ## Installation
 

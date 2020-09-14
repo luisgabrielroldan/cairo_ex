@@ -38,5 +38,8 @@ typedef enum _cx_status_t {
   CX_STATUS_INVALID_REFERENCE,
 } cx_status_t;
 
-typedef unsigned long cx_res_t;
+typedef unsigned long cx_res_handle_t;
+
+#define CX_RES_INVALID  0
+
 #endif

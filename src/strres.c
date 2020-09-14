@@ -23,16 +23,16 @@ static cairo_format_item_t cairo_format_table[TABLE_SIZE_CAIRO_FORMAT] = {
     {CAIRO_FORMAT_RGB30,     "rgb30"},
 };
 
-
-cairo_format_t strres_cairo_format_from_str(const char *str)
+cx_status_t strres_cairo_format_from_str(const char *str, cairo_format_t *format)
 {
     for (int i = 0; i < TABLE_SIZE_CAIRO_FORMAT; i++) {
         if (strcmp(cairo_format_table[i].name, str) == 0 ) {
-            return cairo_format_table[i].value;
+            *format = cairo_format_table[i].value;
+            return CX_STATUS_OK;
         }
     }
 
-    return CAIRO_FORMAT_INVALID;
+    return CX_STATUS_DECODE_ERROR;
 }
 
 const char *strres_cairo_format_to_str(cairo_format_t format)
@@ -43,9 +43,8 @@ const char *strres_cairo_format_to_str(cairo_format_t format)
         }
     }
 
-    return cairo_format_table[0].name;
+    errx(EXIT_FAILURE, "Invalid cairo_format_t! value=%d", format);
 }
-
 
 /********************************************************
  * cairo_status_t
@@ -102,13 +101,55 @@ static cairo_status_item_t cairo_status_table[TABLE_SIZE_CAIRO_STATUS] = {
 };
 
 
-const char *strres_cairo_status_to_str(cairo_status_t format)
+const char *strres_cairo_status_to_str(cairo_status_t status)
 {
     for (int i = 0; i < TABLE_SIZE_CAIRO_STATUS; i++) {
-        if (cairo_status_table[i].value == format) {
+        if (cairo_status_table[i].value == status) {
             return cairo_status_table[i].name;
         }
     }
 
-    return "unknwon";
+    errx(EXIT_FAILURE, "Invalid cairo_status_t! value=%d", status);
 }
+
+/********************************************************
+ * cairo_content_t
+ ********************************************************/
+
+#define TABLE_SIZE_CAIRO_CONTENT 7
+
+typedef struct {
+    cairo_content_t value;
+    const char *name;
+} cairo_content_item_t;
+
+static cairo_content_item_t cairo_content_table[TABLE_SIZE_CAIRO_CONTENT] = {
+    {CAIRO_CONTENT_COLOR, "color"},
+    {CAIRO_CONTENT_ALPHA, "alpha"},
+    {CAIRO_CONTENT_COLOR_ALPHA, "color_alpha"},
+};
+
+
+cx_status_t strres_cairo_content_from_str(const char *str, cairo_content_t *content)
+{
+    for (int i = 0; i < TABLE_SIZE_CAIRO_CONTENT; i++) {
+        if (strcmp(cairo_content_table[i].name, str) == 0 ) {
+            *content = cairo_content_table[i].value;
+            return CX_STATUS_OK;
+        }
+    }
+
+    return CX_STATUS_DECODE_ERROR;
+}
+
+const char *strres_cairo_content_to_str(cairo_content_t content)
+{
+    for (int i = 0; i < TABLE_SIZE_CAIRO_CONTENT; i++) {
+        if (cairo_content_table[i].value == content) {
+            return cairo_content_table[i].name;
+        }
+    }
+
+    errx(EXIT_FAILURE, "Invalid cairo_content_t! value=%d", content);
+}
+

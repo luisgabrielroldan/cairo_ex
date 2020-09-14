@@ -2,7 +2,7 @@
 #define TRANSPORT_H
 
 #include "cairo_ex.h"
-#include "result.h"
+#include "eio.h"
 
 #define TRANSPORT_PACKET_LOG_MESSAGE    0x10
 #define TRANSPORT_PACKET_CMD_RESULT     0x20

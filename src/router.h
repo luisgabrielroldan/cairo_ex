@@ -1,7 +1,7 @@
 #ifndef ROUTER_H
 #define ROUTER_H
 
-#include "result.h"
+#include "eio.h"
 
 typedef int (*cx_method)(const char *, int *, cx_result_t *);
 

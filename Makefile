@@ -31,42 +31,40 @@ CFLAGS += -DDEBUG
 CFLAGS += $(shell pkg-config --cflags cairo)
 LDFLAGS += $(shell pkg-config --libs cairo)
 
-SRC += src/main.c \
-			 src/erlcmd.c \
-			 src/transport.c \
-			 src/result.c \
-			 src/router.c \
-			 src/strres.c \
-			 src/resmgr.c \
-			 src/context.c \
-			 src/path.c \
-			 src/surface.c
+OBJECTS += $(BUILD)/main.o \
+			 $(BUILD)/erlcmd.o \
+			 $(BUILD)/transport.o \
+			 $(BUILD)/eio.o \
+			 $(BUILD)/router.o \
+			 $(BUILD)/strres.o \
+			 $(BUILD)/resmgr.o \
+			 $(BUILD)/api/surface.o \
+			 $(BUILD)/api/path.o \
+			 $(BUILD)/api/transformations.o \
+			 $(BUILD)/api/context.o
 
 
 HEADERS = $(wildcard src/*.h)
-OBJ = $(SRC:src/%.c=$(BUILD)/%.o)
 BIN = $(PREFIX)/cairo_ex
+
+BUILD_DIRS = $(BUILD) $(BUILD)/api
 
 calling_from_make:
 	mix compile
 
-all: install
-
-install: $(PREFIX) $(BUILD) $(BIN)
-
-$(OBJ): $(HEADERS) Makefile
+all: $(PREFIX) $(BUILD_DIRS) $(BIN)
 
 $(BUILD)/%.o: src/%.c
 	$(CC) -c $(ERL_CFLAGS) $(CFLAGS) -o $@ $<
 
-$(BIN): $(OBJ)
+$(BIN): $(OBJECTS)
 	$(CC) -o $@ $^ $(ERL_LDFLAGS) $(LDFLAGS)
 
-$(PREFIX) $(BUILD):
+$(PREFIX) $(BUILD_DIRS):
 	mkdir -p $@
 
 clean:
-	$(RM) $(BIN) $(OBJ)
+	$(RM) $(BIN) $(OBJECTS)
 
 format:
 	astyle \

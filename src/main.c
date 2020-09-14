@@ -23,7 +23,7 @@ static void handle_request(const uint8_t *buffer, size_t length, void *_cookie)
 
     if ((err = router_handle(term_data, length, &result)) == CX_STATUS_OK) {
         transport_send_cmd_response(&result);
-        result_free(&result);
+        eio_result_free(&result);
     } else {
         errx(EXIT_FAILURE, "Unexpected failure! error=%d", err);
     }
