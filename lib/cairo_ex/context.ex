@@ -5,6 +5,7 @@ defmodule CairoEx.Context do
 
   alias CairoEx.{
     CairoPort,
+    Matrix,
     Ref
   }
 
@@ -55,6 +56,12 @@ defmodule CairoEx.Context do
   @spec rotate(context :: Ref.t(), angle :: float()) :: Ref.t()
   def rotate(%Ref{} = context, angle) do
     command(context, {:rotate, [context.handle, angle / 1]})
+  end
+
+  @spec transform(context :: Ref.t(), matrix :: Matrix.t()) :: Ref.t()
+  def transform(%Ref{} = context, matrix) do
+    m = matrix |> Matrix.to_float() |> Matrix.to_list()
+    command(context, {:transform, [context.handle, m]})
   end
 
   @spec set_source_rgb(context :: Ref.t(), r :: float(), g :: float(), b :: float()) :: Ref.t()

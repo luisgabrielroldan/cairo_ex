@@ -19,6 +19,7 @@ static method_entry_t method_table[] = {
     {"rotate", cx_rotate },
     {"scale", cx_scale },
     {"translate", cx_translate },
+    {"transform", cx_transform },
     {"fill", cx_fill },
     {"get_target", cx_get_target },
     {"image_surface_create", cx_surface_image_surface_create },

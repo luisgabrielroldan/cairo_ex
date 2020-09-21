@@ -96,6 +96,14 @@ cx_status_t eio_decode_arg_list(const char *buf, int *index, int nargs) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
+cx_status_t eio_decode_list_header(const char *buf, int *index, int *size) {
+    if (ei_decode_list_header(buf, index, size) != 0) {
+        return _eio_set_status(CX_STATUS_DECODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
 cx_status_t eio_decode_arg_resource(const char *buf, int *index, cx_res_type_t type, void **ref) {
     cx_res_handle_t handle;
     resmgr_entry_t *entry;

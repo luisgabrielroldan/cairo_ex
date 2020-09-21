@@ -22,6 +22,7 @@ cx_status_t eio_decode_long(const char *buf, int *index, long *value);
 cx_status_t eio_decode_double(const char *buf, int *index, double *value);
 cx_status_t eio_decode_atom(const char *buf, int *index, char *dest);
 cx_status_t eio_decode_arg_resource(const char *buf, int *index, cx_res_type_t type, void **ref);
+cx_status_t eio_decode_list_header(const char *buf, int *index, int *size);
 
 cx_status_t eio_decode_str(const char *buf, int *index, char **ref);
 void eio_str_free(void *ptr);
