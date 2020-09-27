@@ -1,6 +1,8 @@
 # CairoEx
 
 [![Actions Status](https://github.com/luisgabrielroldan/cairo_ex/workflows/Tests/badge.svg)](https://github.com/luisgabrielroldan/cairo_ex/actions)
+[![Hex version](https://img.shields.io/hexpm/v/cairo_ex.svg "Hex version")](https://hex.pm/packages/cairo_ex)
+
 
 Cairo wrapper for Elixir.
 
