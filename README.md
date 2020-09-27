@@ -4,7 +4,7 @@
 
 Cairo wrapper for Elixir.
 
-*(WORK IN PROGRESS)*
+*(THIS IS WORK IN PROGRESS)*
 
 ## Usage
 ```elixir

@@ -1,5 +1,7 @@
 defmodule CairoEx.Matrix do
-  @moduledoc false
+  @moduledoc """
+  A transformation matrix
+  """
 
   @type t :: %__MODULE__{
           xx: number(),

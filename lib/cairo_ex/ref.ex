@@ -1,5 +1,7 @@
 defmodule CairoEx.Ref do
-  @moduledoc false
+  @moduledoc """
+  A Ref is an internal cairo reference in the context of a CairoEx process.
+  """
 
   @typep handle :: integer()
 

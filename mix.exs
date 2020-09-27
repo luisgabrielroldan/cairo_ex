@@ -14,7 +14,7 @@ defmodule CairoEx.MixProject do
       docs: docs(),
       start_permanent: Mix.env() == :prod,
       deps: deps(),
-      aliases: [format: [&format_c/1, "format"]],
+      aliases: aliases(),
       compilers: [:elixir_make | Mix.compilers()],
       make_targets: ["all"],
       make_clean: ["clean"],
@@ -66,6 +66,17 @@ defmodule CairoEx.MixProject do
       source_ref: "v#{@version}",
       source_url: @source_url
     ]
+  end
+
+  defp aliases do
+    [
+      docs: ["docs", &copy_images/1],
+      format: [&format_c/1, "format"]
+    ]
+  end
+
+  defp copy_images(_) do
+    File.cp_r!("img/", "doc/img/")
   end
 
   defp format_c([]) do
