@@ -1,5 +1,7 @@
 # CairoEx
 
+[![Actions Status](https://github.com/luisgabrielroldan/cairo_ex/workflows/Tests/badge.svg)](https://github.com/luisgabrielroldan/cairo_ex/actions)
+
 Cairo wrapper for Elixir.
 
 *(WORK IN PROGRESS)*
