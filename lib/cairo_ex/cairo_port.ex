@@ -49,7 +49,15 @@ defmodule CairoEx.CairoPort do
     raise CairoEx.Error, message: "Command encoding error"
   end
 
-  defp handle_command_result(result) do
+  defp handle_command_result(:ok) do
+    :ok
+  end
+
+  defp handle_command_result({:ok, _} = result) do
+    result
+  end
+
+  defp handle_command_result({:error, _} = result) do
     result
   end
 

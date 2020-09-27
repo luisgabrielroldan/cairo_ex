@@ -49,6 +49,28 @@ cx_status_t eio_encode_result_ok_handle(ei_x_buff *result, cx_res_handle_t res)
     return _eio_set_status(CX_STATUS_OK);
 }
 
+cx_status_t eio_encode_result_ok_tuple(ei_x_buff *result)
+{
+    if ((ei_x_new_with_version(result) != 0) ||
+            (ei_x_encode_tuple_header(result, 2) != 0) ||
+            (ei_x_encode_atom(result, "ok") != 0)) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
+cx_status_t eio_encode_result_ok_matrix(ei_x_buff *result, cairo_matrix_t *matrix) {
+    if ((ei_x_new_with_version(result) != 0) ||
+            (ei_x_encode_tuple_header(result, 2) != 0) ||
+            (ei_x_encode_atom(result, "ok") != 0) ||
+            eio_encode_cairo_matrix(result, matrix)) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
 cx_status_t eio_encode_result_error_atom(ei_x_buff *result, const char *atom)
 {
     if ((ei_x_new_with_version(result) != 0) ||
@@ -69,9 +91,41 @@ cx_status_t eio_decode_long(const char *buf, int *index, long *value) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
+cx_status_t eio_encode_long(ei_x_buff *result, long value) {
+    if (ei_x_encode_long(result, value) != 0) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
+cx_status_t eio_encode_list_header(ei_x_buff *result, int arity) {
+    if (ei_x_encode_list_header(result, arity) != 0) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
+cx_status_t eio_encode_empty_list(ei_x_buff *result) {
+    if (ei_x_encode_empty_list(result) != 0) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
 cx_status_t eio_decode_double(const char *buf, int *index, double *value) {
     if (ei_decode_double(buf, index, value) != 0) {
         return _eio_set_status(CX_STATUS_DECODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
+cx_status_t eio_encode_double(ei_x_buff *result, double value) {
+    if (ei_x_encode_double(result, value) != 0) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
 
     return _eio_set_status(CX_STATUS_OK);
@@ -143,3 +197,48 @@ cx_status_t eio_decode_str(const char *buf, int *index, char **ref) {
 void eio_str_free(void *ptr) {
     free(ptr);
 }
+
+cx_status_t eio_encode_cairo_matrix(ei_x_buff *result, cairo_matrix_t *matrix) {
+    if ((ei_x_encode_list_header(result, 6) != 0) ||
+            eio_encode_double(result, matrix->xx) ||
+            eio_encode_double(result, matrix->yx) ||
+            eio_encode_double(result, matrix->xy) ||
+            eio_encode_double(result, matrix->yy) ||
+            eio_encode_double(result, matrix->x0) ||
+            eio_encode_double(result, matrix->y0) ||
+            ei_x_encode_empty_list(result) ) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
+cx_status_t eio_decode_cairo_matrix(const char *buf, int *index, cairo_matrix_t *matrix) {
+    int size;
+    double xx, xy, x0;
+    double yx, yy, y0;
+
+    if (eio_decode_list_header(buf, index, &size))
+        return eio_status();
+
+    if (size != 6) return CX_STATUS_DECODE_ERROR;
+
+    if (eio_decode_double(buf, index, &xx)  ||
+            eio_decode_double(buf, index, &yx)  ||
+            eio_decode_double(buf, index, &xy)  ||
+            eio_decode_double(buf, index, &yy)  ||
+            eio_decode_double(buf, index, &x0)  ||
+            eio_decode_double(buf, index, &y0) ) {
+        return eio_status();
+    }
+
+    matrix->xx = xx;
+    matrix->xy = xy;
+    matrix->x0 = x0;
+    matrix->yx = yx;
+    matrix->yy = yy;
+    matrix->y0 = y0;
+
+    return CX_STATUS_OK;
+}
+

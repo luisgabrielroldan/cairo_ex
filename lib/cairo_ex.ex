@@ -7,6 +7,8 @@ defmodule CairoEx do
 
   @type t :: CairoPort.t()
 
+  @type vector :: {x :: float(), y :: float()}
+
   @type format ::
           :invalid
           | :argb32

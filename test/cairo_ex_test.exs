@@ -1,11 +1,15 @@
 defmodule CairoExTest do
   use ExUnit.Case
 
-  alias CairoEx.{Context, Surface}
+  alias CairoEx.{Context, Matrix, Surface}
 
-  test "proof of concept" do
-    assert {:ok, cairo} = CairoEx.start_link()
+  setup do
+    {:ok, cairo} = CairoEx.start_link()
 
+    {:ok, %{cairo: cairo}}
+  end
+
+  test "proof of concept", %{cairo: cairo} do
     assert {:ok, surface} = Surface.image_surface_create(cairo, :rgb24, 320, 240)
     assert {:ok, context} = Context.create(surface)
 
@@ -19,19 +23,16 @@ defmodule CairoExTest do
     |> Context.stroke()
 
     assert {:ok, ^surface} = Context.get_target(context)
-    assert :ok = Context.destroy(context)
+    Context.destroy(context)
     assert :ok = Surface.write_to_png(surface, "/tmp/image.png")
-    assert :ok = Surface.destroy(surface)
+    Surface.destroy(surface)
   end
 
-  test "rectangles" do
-    assert {:ok, cairo} = CairoEx.start_link()
-
+  test "rectangles", %{cairo: cairo} do
     assert {:ok, surface} = Surface.image_surface_create(cairo, :rgb24, 270, 270)
     assert {:ok, context} = Context.create(surface)
 
     context
-    |> Context.set_source_rgb(1.0, 1.0, 1.0)
     |> Context.paint()
     |> Context.set_source_rgb(0.5, 0.5, 1)
     |> Context.rectangle(20, 20, 100, 100)
@@ -46,7 +47,20 @@ defmodule CairoExTest do
     |> Context.rectangle(150, 140, 100, 100)
     |> Context.fill()
 
+    m = Matrix.new(2.0, 1.0, 3.0, 1.0, 0.0, 0.0)
+
+    assert ^context = Context.set_matrix(context, m)
+
+    assert {:ok, ^m} = Context.get_matrix(context)
+
+    assert {:ok, {50.0, 20.0}} = Context.user_to_device(context, 10, 10)
+    assert {:ok, {50.0, 20.0}} = Context.user_to_device_distance(context, 10, 10)
+    assert {:ok, {10.0, 10.0}} = Context.device_to_user(context, 50, 20)
+    assert {:ok, {10.0, 10.0}} = Context.device_to_user_distance(context, 50, 20)
+
+    assert ^context = Context.identity_matrix(context)
+
     assert :ok = Surface.write_to_png(surface, "/tmp/image.png")
-    assert :ok = Surface.destroy(surface)
+    Surface.destroy(surface)
   end
 end

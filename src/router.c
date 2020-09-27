@@ -13,22 +13,26 @@ typedef struct {
 } method_entry_t;
 
 static method_entry_t method_table[] = {
-    {"arc", cx_arc },
-    {"create", cx_create },
-    {"destroy", cx_destroy },
+    // Transformations
+    {"device_to_user", cx_device_to_user },
+    {"device_to_user_distance", cx_device_to_user_distance },
+    {"get_matrix", cx_get_matrix },
+    {"identity_matrix", cx_identity_matrix },
     {"rotate", cx_rotate },
     {"scale", cx_scale },
-    {"translate", cx_translate },
+    {"set_matrix", cx_set_matrix },
     {"transform", cx_transform },
+    {"translate", cx_translate },
+    {"user_to_device", cx_user_to_device },
+    {"user_to_device_distance", cx_user_to_device_distance },
+    // Drawing
+    {"create", cx_create },
+    {"destroy", cx_destroy },
     {"fill", cx_fill },
     {"get_target", cx_get_target },
-    {"image_surface_create", cx_surface_image_surface_create },
-    {"line_to", cx_line_to },
-    {"move_to", cx_move_to },
     {"paint", cx_paint },
     {"pop_group", cx_pop_group },
     {"push_group", cx_push_group },
-    {"rectangle", cx_rectangle },
     {"restore", cx_restore },
     {"save", cx_save },
     {"set_line_width", cx_set_line_width },
@@ -36,6 +40,13 @@ static method_entry_t method_table[] = {
     {"set_source_rgba", cx_set_source_rgba },
     {"status", cx_status },
     {"stroke", cx_stroke },
+    // Paths
+    {"arc", cx_arc },
+    {"line_to", cx_line_to },
+    {"move_to", cx_move_to },
+    {"rectangle", cx_rectangle },
+    // Surface
+    {"image_surface_create", cx_surface_image_surface_create },
     {"surface_destroy", cx_surface_destroy },
     {"surface_write_to_png", cx_surface_write_to_png },
     {NULL, NULL}
