@@ -128,7 +128,7 @@ cx_status_t cx_user_to_device(const char *buf, int *index, cx_result_t *result)
 
     cairo_user_to_device(cairo, &x, &y);
 
-    if (eio_encode_result_ok_tuple(result) ||
+    if (eio_encode_result_ok_tuple_header(result) ||
             eio_encode_list_header(result, 2) ||
             eio_encode_double(result, x) ||
             eio_encode_double(result, y) ||
@@ -153,7 +153,7 @@ cx_status_t cx_user_to_device_distance(const char *buf, int *index, cx_result_t 
 
     cairo_user_to_device_distance(cairo, &dx, &dy);
 
-    if (eio_encode_result_ok_tuple(result) ||
+    if (eio_encode_result_ok_tuple_header(result) ||
             eio_encode_list_header(result, 2) ||
             eio_encode_double(result, dx) ||
             eio_encode_double(result, dy) ||
@@ -178,7 +178,7 @@ cx_status_t cx_device_to_user(const char *buf, int *index, cx_result_t *result)
 
     cairo_device_to_user(cairo, &x, &y);
 
-    if (eio_encode_result_ok_tuple(result) ||
+    if (eio_encode_result_ok_tuple_header(result) ||
             eio_encode_list_header(result, 2) ||
             eio_encode_double(result, x) ||
             eio_encode_double(result, y) ||
@@ -203,7 +203,7 @@ cx_status_t cx_device_to_user_distance(const char *buf, int *index, cx_result_t 
 
     cairo_device_to_user_distance(cairo, &dx, &dy);
 
-    if (eio_encode_result_ok_tuple(result) ||
+    if (eio_encode_result_ok_tuple_header(result) ||
             eio_encode_list_header(result, 2) ||
             eio_encode_double(result, dx) ||
             eio_encode_double(result, dy) ||

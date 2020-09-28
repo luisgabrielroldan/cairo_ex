@@ -13,7 +13,7 @@ cx_status_t eio_status() {
     return eio_last_status;
 }
 
-cx_status_t eio_x_encode_handle(ei_x_buff *buf, cx_res_handle_t handle) {
+cx_status_t eio_encode_handle(cx_result_t *buf, cx_res_handle_t handle) {
     if (ei_x_encode_ulong(buf, handle) != 0) {
         return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
@@ -27,7 +27,7 @@ cx_status_t eio_result_free(cx_result_t *result)
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_result_ok(ei_x_buff *result)
+cx_status_t eio_encode_result_ok(cx_result_t *result)
 {
     if ((ei_x_new_with_version(result) != 0) ||
             (ei_x_encode_atom(result, "ok") != 0)) {
@@ -37,19 +37,19 @@ cx_status_t eio_encode_result_ok(ei_x_buff *result)
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_result_ok_handle(ei_x_buff *result, cx_res_handle_t res)
+cx_status_t eio_encode_result_ok_handle(cx_result_t *result, cx_res_handle_t res)
 {
     if ((ei_x_new_with_version(result) != 0) ||
             (ei_x_encode_tuple_header(result, 2) != 0) ||
             (ei_x_encode_atom(result, "ok") != 0) ||
-            (eio_x_encode_handle(result, res) != 0) ) {
+            (eio_encode_handle(result, res) != 0) ) {
         return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
 
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_result_ok_tuple(ei_x_buff *result)
+cx_status_t eio_encode_result_ok_tuple_header(cx_result_t *result)
 {
     if ((ei_x_new_with_version(result) != 0) ||
             (ei_x_encode_tuple_header(result, 2) != 0) ||
@@ -60,7 +60,7 @@ cx_status_t eio_encode_result_ok_tuple(ei_x_buff *result)
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_result_ok_matrix(ei_x_buff *result, cairo_matrix_t *matrix) {
+cx_status_t eio_encode_result_ok_matrix(cx_result_t *result, cairo_matrix_t *matrix) {
     if ((ei_x_new_with_version(result) != 0) ||
             (ei_x_encode_tuple_header(result, 2) != 0) ||
             (ei_x_encode_atom(result, "ok") != 0) ||
@@ -71,7 +71,7 @@ cx_status_t eio_encode_result_ok_matrix(ei_x_buff *result, cairo_matrix_t *matri
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_result_error_atom(ei_x_buff *result, const char *atom)
+cx_status_t eio_encode_result_error_atom(cx_result_t *result, const char *atom)
 {
     if ((ei_x_new_with_version(result) != 0) ||
             (ei_x_encode_tuple_header(result, 2) != 0) ||
@@ -91,7 +91,7 @@ cx_status_t eio_decode_long(const char *buf, int *index, long *value) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_long(ei_x_buff *result, long value) {
+cx_status_t eio_encode_long(cx_result_t *result, long value) {
     if (ei_x_encode_long(result, value) != 0) {
         return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
@@ -99,7 +99,7 @@ cx_status_t eio_encode_long(ei_x_buff *result, long value) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_list_header(ei_x_buff *result, int arity) {
+cx_status_t eio_encode_list_header(cx_result_t *result, int arity) {
     if (ei_x_encode_list_header(result, arity) != 0) {
         return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
@@ -107,7 +107,7 @@ cx_status_t eio_encode_list_header(ei_x_buff *result, int arity) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_empty_list(ei_x_buff *result) {
+cx_status_t eio_encode_empty_list(cx_result_t *result) {
     if (ei_x_encode_empty_list(result) != 0) {
         return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
@@ -123,7 +123,7 @@ cx_status_t eio_decode_double(const char *buf, int *index, double *value) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
-cx_status_t eio_encode_double(ei_x_buff *result, double value) {
+cx_status_t eio_encode_double(cx_result_t *result, double value) {
     if (ei_x_encode_double(result, value) != 0) {
         return _eio_set_status(CX_STATUS_ENCODE_ERROR);
     }
@@ -198,7 +198,7 @@ void eio_str_free(void *ptr) {
     free(ptr);
 }
 
-cx_status_t eio_encode_cairo_matrix(ei_x_buff *result, cairo_matrix_t *matrix) {
+cx_status_t eio_encode_cairo_matrix(cx_result_t *result, cairo_matrix_t *matrix) {
     if ((ei_x_encode_list_header(result, 6) != 0) ||
             eio_encode_double(result, matrix->xx) ||
             eio_encode_double(result, matrix->yx) ||
