@@ -9,6 +9,11 @@ defmodule CairoEx do
 
   @type vector :: {x :: float(), y :: float()}
 
+  @type content ::
+          :color
+          | :alpha
+          | :color_alpha
+
   @type format ::
           :invalid
           | :argb32

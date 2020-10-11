@@ -8,6 +8,7 @@ defmodule CairoEx.Ref do
   @typep type ::
            :surface
            | :context
+           | :pattern
 
   @type t :: %__MODULE__{
           handle: handle(),

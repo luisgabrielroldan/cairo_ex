@@ -229,8 +229,47 @@ cx_status_t cx_pop_group(const char *buf, int *index, cx_result_t *result)
         return eio_status();
     }
 
-    cairo_pop_group(cairo);
+    if ((cairo = cairo_pop_group(cairo)) != NULL) {
+        cx_res_handle_t handle = resmgr_register(cairo, RES_TYPE_PATTERN);
+        return eio_encode_result_ok_handle(result, handle);
+    }
+
+    cairo_status_t status = cairo_surface_status(NULL);
+    return eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+}
+
+cx_status_t cx_pop_group_to_source(const char *buf, int *index, cx_result_t *result)
+{
+    void *cairo;
+
+    if (eio_decode_arg_list(buf, index, 1) ||
+            eio_decode_arg_resource(buf, index, RES_TYPE_CONTEXT, &cairo)) {
+        return eio_status();
+    }
+
+    cairo_pop_group_to_source(cairo);
 
     return eio_encode_result_ok(result);
 }
 
+cx_status_t cx_push_group_with_content(const char *buf, int *index, cx_result_t *result)
+{
+    void *cairo;
+    char content_buf[MAXATOMLEN];
+    cairo_content_t content;
+
+    if (eio_decode_arg_list(buf, index, 2) ||
+            eio_decode_arg_resource(buf, index, RES_TYPE_CONTEXT, &cairo) ||
+            eio_decode_atom(buf, index, content_buf)) {
+        return eio_status();
+    }
+
+    if (strres_cairo_content_from_str(content_buf, &content)) {
+        // TODO: Implement strres_status()
+        return CX_STATUS_DECODE_ERROR;
+    }
+
+    cairo_push_group_with_content(cairo, content);
+
+    return eio_encode_result_ok(result);
+}

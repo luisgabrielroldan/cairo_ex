@@ -14,6 +14,7 @@ typedef struct node {
 typedef enum _cx_res_type_t {
     RES_TYPE_SURFACE = 0x01,
     RES_TYPE_CONTEXT,
+    RES_TYPE_PATTERN,
 } cx_res_type_t;
 
 int ei_decode_cx_res(const char *buf, int *index, cx_res_handle_t *handle);

@@ -17,5 +17,7 @@ cx_status_t cx_restore(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_get_target(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_push_group(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_pop_group(const char *buf, int *index, cx_result_t *result);
+cx_status_t cx_pop_group_to_source(const char *buf, int *index, cx_result_t *result);
+cx_status_t cx_push_group_with_content(const char *buf, int *index, cx_result_t *result);
 
 #endif

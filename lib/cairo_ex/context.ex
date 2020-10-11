@@ -277,24 +277,39 @@ defmodule CairoEx.Context do
   end
 
   @doc """
-  Restores cr to the state saved by a preceding call to save/1 and removes that state from the stack of saved states.
+  Restores cr to the state saved by a preceding call to save/1 and removes
+  that state from the stack of saved states.
   """
   @spec restore(context :: Ref.t()) :: Ref.t()
   def restore(%Ref{} = context) do
     chained_command(context, {:restore, [context.handle]})
   end
 
-  # @spec push_group(context :: Ref.t()) :: Ref.t()
-  # def push_group(%Ref{} = context) do
-  #   chained_command(context, {:push_group, [context.handle]})
-  # end
-  #
-  # @doc """
-  # """
-  # @spec pop_group(context :: Ref.t()) :: Ref.t()
-  # def pop_group(%Ref{} = context) do
-  #   chained_command(context, {:pop_group, [context.handle]})
-  # end
+  @spec push_group_with_content(context :: Ref.t(), content :: CairoEx.content()) :: Ref.t()
+  def push_group_with_content(%Ref{} = context, content) when is_atom(content) do
+    chained_command(context, {:push_group_with_content, [context.handle, content]})
+  end
+
+  @spec pop_group(context :: Ref.t()) :: {:ok, Ref.t()}
+  def pop_group(%Ref{} = context) do
+    case CairoPort.command(context.port, {:pop_group, [context.handle]}) do
+      {:ok, handle} -> {:ok, Ref.make(handle, :pattern, context.port)}
+      error -> error
+    end
+  end
+
+  @spec push_group(context :: Ref.t()) :: Ref.t()
+  def pop_group_to_source(%Ref{} = context) do
+    chained_command(context, {:pop_group_to_source, [context.handle]})
+  end
+
+  @doc """
+  Temporarily redirects drawing to an intermediate surface known as a group.
+  """
+  @spec push_group(context :: Ref.t()) :: Ref.t()
+  def push_group(%Ref{} = context) do
+    chained_command(context, {:push_group, [context.handle]})
+  end
 
   @doc """
   Returns the last error, if any.
