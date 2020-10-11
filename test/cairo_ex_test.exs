@@ -20,6 +20,7 @@ defmodule CairoExTest do
     |> Context.line_to(100.0, 100.0)
     |> Context.set_line_width(6.0)
     |> Context.set_source_rgb(1.0, 0.0, 0.0)
+    |> Context.set_dash([1.0, 5.0], 0.0)
     |> Context.stroke()
 
     assert {:ok, ^surface} = Context.get_target(context)

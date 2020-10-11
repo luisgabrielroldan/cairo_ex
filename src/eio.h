@@ -23,7 +23,7 @@ cx_status_t eio_encode_double(cx_result_t *result, double value);
 cx_status_t eio_encode_list_header(cx_result_t *result, int arity);
 cx_status_t eio_encode_empty_list(cx_result_t *result);
 
-
+cx_status_t eio_skip_term(const char *buf, int *index);
 cx_status_t eio_decode_arg_list(const char *buf, int *index, int nargs);
 cx_status_t eio_decode_long(const char *buf, int *index, long *value);
 cx_status_t eio_decode_double(const char *buf, int *index, double *value);
@@ -34,6 +34,7 @@ cx_status_t eio_decode_list_header(const char *buf, int *index, int *size);
 cx_status_t eio_encode_cairo_matrix(cx_result_t *result, cairo_matrix_t *matrix);
 cx_status_t eio_decode_cairo_matrix(const char *buf, int *index, cairo_matrix_t *matrix);
 
+cx_status_t eio_decode_double_list(const char *buf, int *index, double **olist, int *len);
 
 cx_status_t eio_decode_str(const char *buf, int *index, char **ref);
 void eio_str_free(void *ptr);

@@ -40,6 +40,7 @@ static method_entry_t method_table[] = {
     {"set_line_width", cx_set_line_width },
     {"set_source_rgb", cx_set_source_rgb },
     {"set_source_rgba", cx_set_source_rgba },
+    {"set_dash", cx_set_dash },
     {"status", cx_status },
     {"stroke", cx_stroke },
     // Paths

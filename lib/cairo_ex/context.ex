@@ -331,6 +331,12 @@ defmodule CairoEx.Context do
     chained_command(context, {:push_group, [context.handle]})
   end
 
+  @spec set_dash(context :: Ref.t(), list(float()), offset :: float()) :: Ref.t()
+  def set_dash(%Ref{} = context, dashes, offset)
+      when is_list(dashes) and is_float(offset) do
+    chained_command(context, {:set_dash, [context.handle, dashes, offset]})
+  end
+
   @doc """
   Returns the last error, if any.
   """

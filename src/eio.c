@@ -83,6 +83,14 @@ cx_status_t eio_encode_result_error_atom(cx_result_t *result, const char *atom)
     return _eio_set_status(CX_STATUS_OK);
 }
 
+cx_status_t eio_skip_term(const char *buf, int *index) {
+    if (ei_skip_term(buf, index) != 0) {
+        return _eio_set_status(CX_STATUS_DECODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
 cx_status_t eio_decode_long(const char *buf, int *index, long *value) {
     if (ei_decode_long(buf, index, value) != 0) {
         return _eio_set_status(CX_STATUS_DECODE_ERROR);
@@ -241,4 +249,39 @@ cx_status_t eio_decode_cairo_matrix(const char *buf, int *index, cairo_matrix_t 
 
     return CX_STATUS_OK;
 }
+
+cx_status_t eio_decode_double_list(const char *buf, int *index, double **olist, int *len) {
+    int arity;
+    double *list;
+    int i = 0;
+
+    if (eio_decode_list_header(buf, index, &arity)) {
+        return eio_status();
+    }
+
+    list = malloc(sizeof(double) * arity);
+
+    while (i < arity) {
+        if (eio_decode_double(buf, index, list + i)) {
+            goto err;
+        }
+
+        i++;
+    }
+
+    if (eio_skip_term(buf, index)) {
+        goto err;
+    }
+
+    *len = arity;
+    *olist = list;
+
+    return _eio_set_status(CX_STATUS_OK);
+
+err:
+    free(list);
+    return _eio_set_status(CX_STATUS_DECODE_ERROR);
+}
+
+
 

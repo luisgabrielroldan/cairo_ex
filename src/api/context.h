@@ -6,6 +6,7 @@
 cx_status_t cx_create(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_set_source_rgb(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_set_source_rgba(const char *buf, int *index, cx_result_t *result);
+cx_status_t cx_set_dash(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_paint(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_fill(const char *buf, int *index, cx_result_t *result);
 cx_status_t cx_set_line_width(const char *buf, int *index, cx_result_t *result);

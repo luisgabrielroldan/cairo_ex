@@ -288,11 +288,31 @@ cx_status_t cx_push_group_with_content(const char *buf, int *index, cx_result_t 
     }
 
     if (strres_cairo_content_from_str(content_buf, &content)) {
-        // TODO: Implement strres_status()
-        return CX_STATUS_DECODE_ERROR;
+        return strres_status();
     }
 
     cairo_push_group_with_content(cairo, content);
 
     return eio_encode_result_ok(result);
 }
+
+cx_status_t cx_set_dash(const char *buf, int *index, cx_result_t *result)
+{
+    double *dashes;
+    int num_dashes;
+    double offset;
+    void *cairo;
+
+    if (eio_decode_arg_list(buf, index, 3) ||
+            eio_decode_arg_resource(buf, index, RES_TYPE_CONTEXT, &cairo) ||
+            eio_decode_double_list(buf, index, &dashes, &num_dashes) ||
+            eio_decode_double(buf, index, &offset)) {
+        return eio_status();
+    }
+
+    cairo_set_dash(cairo, dashes, (int)num_dashes, offset);
+
+    return eio_encode_result_ok(result);
+}
+
+
