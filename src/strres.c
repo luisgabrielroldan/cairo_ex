@@ -2,6 +2,17 @@
 
 #include <string.h>
 
+static cx_status_t strres_last_status = CX_STATUS_OK;
+
+static cx_status_t _strres_set_status(cx_status_t status) {
+    strres_last_status = status;
+    return status;
+}
+
+cx_status_t strres_status() {
+    return strres_last_status;
+}
+
 /********************************************************
  * cairo_format_t
  ********************************************************/
@@ -28,22 +39,23 @@ cx_status_t strres_cairo_format_from_str(const char *str, cairo_format_t *format
     for (int i = 0; i < TABLE_SIZE_CAIRO_FORMAT; i++) {
         if (strcmp(cairo_format_table[i].name, str) == 0 ) {
             *format = cairo_format_table[i].value;
-            return CX_STATUS_OK;
+            return _strres_set_status(CX_STATUS_OK);
         }
     }
 
-    return CX_STATUS_DECODE_ERROR;
+    return _strres_set_status(CX_STATUS_DECODE_ERROR);
 }
 
-const char *strres_cairo_format_to_str(cairo_format_t format)
+cx_status_t strres_cairo_format_to_str(cairo_format_t format, const char **s)
 {
     for (int i = 0; i < TABLE_SIZE_CAIRO_FORMAT; i++) {
         if (cairo_format_table[i].value == format) {
-            return cairo_format_table[i].name;
+            *s = cairo_format_table[i].name;
+            return _strres_set_status(CX_STATUS_OK);
         }
     }
 
-    errx(EXIT_FAILURE, "Invalid cairo_format_t! value=%d", format);
+    return _strres_set_status(CX_STATUS_ENCODE_ERROR);
 }
 
 /********************************************************
@@ -101,15 +113,16 @@ static cairo_status_item_t cairo_status_table[TABLE_SIZE_CAIRO_STATUS] = {
 };
 
 
-const char *strres_cairo_status_to_str(cairo_status_t status)
+cx_status_t strres_cairo_status_to_str(cairo_status_t status, const char **s)
 {
     for (int i = 0; i < TABLE_SIZE_CAIRO_STATUS; i++) {
         if (cairo_status_table[i].value == status) {
-            return cairo_status_table[i].name;
+            *s = cairo_status_table[i].name;
+            return _strres_set_status(CX_STATUS_OK);
         }
     }
 
-    errx(EXIT_FAILURE, "Invalid cairo_status_t! value=%d", status);
+    return _strres_set_status(CX_STATUS_ENCODE_ERROR);
 }
 
 /********************************************************
@@ -135,21 +148,22 @@ cx_status_t strres_cairo_content_from_str(const char *str, cairo_content_t *cont
     for (int i = 0; i < TABLE_SIZE_CAIRO_CONTENT; i++) {
         if (strcmp(cairo_content_table[i].name, str) == 0 ) {
             *content = cairo_content_table[i].value;
-            return CX_STATUS_OK;
+            return _strres_set_status(CX_STATUS_OK);
         }
     }
 
-    return CX_STATUS_DECODE_ERROR;
+    return _strres_set_status(CX_STATUS_DECODE_ERROR);
 }
 
-const char *strres_cairo_content_to_str(cairo_content_t content)
+cx_status_t strres_cairo_content_to_str(cairo_content_t content, const char** s)
 {
     for (int i = 0; i < TABLE_SIZE_CAIRO_CONTENT; i++) {
         if (cairo_content_table[i].value == content) {
-            return cairo_content_table[i].name;
+            *s = cairo_content_table[i].name;
+            return _strres_set_status(CX_STATUS_OK);
         }
     }
 
-    errx(EXIT_FAILURE, "Invalid cairo_content_t! value=%d", content);
+    return _strres_set_status(CX_STATUS_ENCODE_ERROR);
 }
 

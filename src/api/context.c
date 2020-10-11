@@ -8,6 +8,7 @@ cx_status_t cx_create(const char *buf, int *index, cx_result_t *result)
 {
     void *surface;
     cairo_t *cairo;
+    const char *status_str;
 
     if (eio_decode_arg_list(buf, index, 1) ||
             eio_decode_arg_resource(buf, index, RES_TYPE_SURFACE, &surface)) {
@@ -20,7 +21,12 @@ cx_status_t cx_create(const char *buf, int *index, cx_result_t *result)
     }
 
     cairo_status_t status = cairo_surface_status(NULL);
-    return eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+
+    if (strres_cairo_status_to_str(status, &status_str)) {
+        return strres_status();
+    }
+
+    return eio_encode_result_error_atom(result, status_str);
 }
 
 cx_status_t cx_set_source_rgb(const char *buf, int *index, cx_result_t *result)
@@ -151,7 +157,13 @@ cx_status_t cx_status(const char *buf, int *index, cx_result_t *result)
     if (status == CAIRO_STATUS_SUCCESS) {
         return eio_encode_result_ok(result);
     } else {
-        return eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+        const char* status_str;
+
+        if (strres_cairo_status_to_str(status, &status_str)) {
+            return strres_status();
+        }
+
+        return eio_encode_result_error_atom(result, status_str);
     }
 }
 
@@ -195,8 +207,14 @@ cx_status_t cx_get_target(const char *buf, int *index, cx_result_t *result)
     }
 
     if ((cairo_surface = cairo_get_target(cairo)) == NULL) {
+        const char *status_str;
         cairo_status_t status = cairo_status(cairo);
-        return eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+
+        if (strres_cairo_status_to_str(status, &status_str)) {
+            return strres_status();
+        }
+
+        return eio_encode_result_error_atom(result, status_str);
     }
 
     if (resmgr_find_entry_by_ref(cairo_surface, RES_TYPE_SURFACE, &entry)) {
@@ -223,6 +241,7 @@ cx_status_t cx_push_group(const char *buf, int *index, cx_result_t *result)
 cx_status_t cx_pop_group(const char *buf, int *index, cx_result_t *result)
 {
     void *cairo;
+    const char *status_str;
 
     if (eio_decode_arg_list(buf, index, 1) ||
             eio_decode_arg_resource(buf, index, RES_TYPE_CONTEXT, &cairo)) {
@@ -235,7 +254,11 @@ cx_status_t cx_pop_group(const char *buf, int *index, cx_result_t *result)
     }
 
     cairo_status_t status = cairo_surface_status(NULL);
-    return eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+    if (strres_cairo_status_to_str(status, &status_str)) {
+        return strres_status();
+    }
+
+    return eio_encode_result_error_atom(result, status_str);
 }
 
 cx_status_t cx_pop_group_to_source(const char *buf, int *index, cx_result_t *result)
