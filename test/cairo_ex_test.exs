@@ -34,17 +34,17 @@ defmodule CairoExTest do
 
     context
     |> Context.paint()
-    |> Context.set_source_rgb(0.5, 0.5, 1)
-    |> Context.rectangle(20, 20, 100, 100)
+    |> Context.set_source_rgb(0.5, 0.5, 1.0)
+    |> Context.rectangle(20.0, 20.0, 100.0, 100.0)
     |> Context.fill()
     |> Context.set_source_rgb(0.6, 0.6, 0.6)
-    |> Context.rectangle(150, 20, 100, 100)
+    |> Context.rectangle(150.0, 20.0, 100.0, 100.0)
     |> Context.fill()
-    |> Context.set_source_rgb(0, 0.3, 0)
-    |> Context.rectangle(20, 140, 100, 100)
+    |> Context.set_source_rgb(0.0, 0.3, 0.0)
+    |> Context.rectangle(20.0, 140.0, 100.0, 100.0)
     |> Context.fill()
-    |> Context.set_source_rgb(1, 0, 0.5)
-    |> Context.rectangle(150, 140, 100, 100)
+    |> Context.set_source_rgb(1.0, 0.0, 0.5)
+    |> Context.rectangle(150.0, 140.0, 100.0, 100.0)
     |> Context.fill()
 
     m = Matrix.new(2.0, 1.0, 3.0, 1.0, 0.0, 0.0)
@@ -53,10 +53,10 @@ defmodule CairoExTest do
 
     assert {:ok, ^m} = Context.get_matrix(context)
 
-    assert {:ok, {50.0, 20.0}} = Context.user_to_device(context, 10, 10)
-    assert {:ok, {50.0, 20.0}} = Context.user_to_device_distance(context, 10, 10)
-    assert {:ok, {10.0, 10.0}} = Context.device_to_user(context, 50, 20)
-    assert {:ok, {10.0, 10.0}} = Context.device_to_user_distance(context, 50, 20)
+    assert {:ok, {50.0, 20.0}} = Context.user_to_device(context, 10.0, 10.0)
+    assert {:ok, {50.0, 20.0}} = Context.user_to_device_distance(context, 10.0, 10.0)
+    assert {:ok, {10.0, 10.0}} = Context.device_to_user(context, 50.0, 20.0)
+    assert {:ok, {10.0, 10.0}} = Context.device_to_user_distance(context, 50.0, 20.0)
 
     assert ^context = Context.identity_matrix(context)
 

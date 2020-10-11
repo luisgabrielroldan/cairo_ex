@@ -54,9 +54,10 @@ defmodule CairoEx.Context do
   """
   @spec user_to_device(context :: Ref.t(), x :: float(), y :: float()) ::
           {:ok, CairoEx.vector()} | {:error, CairoEx.error_reason()}
-  def user_to_device(%Ref{} = context, x, y) do
+  def user_to_device(%Ref{} = context, x, y)
+      when is_float(x) and is_float(y) do
     context.port
-    |> CairoPort.command({:user_to_device, [context.handle, x / 1, y / 1]})
+    |> CairoPort.command({:user_to_device, [context.handle, x, y]})
     |> case do
       {:ok, [x1, y1]} -> {:ok, {x1, y1}}
       error -> error
@@ -68,9 +69,10 @@ defmodule CairoEx.Context do
   """
   @spec user_to_device_distance(context :: Ref.t(), dx :: float(), dy :: float()) ::
           {:ok, CairoEx.vector()} | {:error, CairoEx.error_reason()}
-  def user_to_device_distance(%Ref{} = context, dx, dy) do
+  def user_to_device_distance(%Ref{} = context, dx, dy)
+      when is_float(dx) and is_float(dy) do
     context.port
-    |> CairoPort.command({:user_to_device_distance, [context.handle, dx / 1, dy / 1]})
+    |> CairoPort.command({:user_to_device_distance, [context.handle, dx, dy]})
     |> case do
       {:ok, [dx1, dy1]} -> {:ok, {dx1, dy1}}
       error -> error
@@ -82,9 +84,10 @@ defmodule CairoEx.Context do
   """
   @spec device_to_user(context :: Ref.t(), x :: float(), y :: float()) ::
           {:ok, CairoEx.vector()} | {:error, CairoEx.error_reason()}
-  def device_to_user(%Ref{} = context, x, y) do
+  def device_to_user(%Ref{} = context, x, y)
+      when is_float(x) and is_float(y) do
     context.port
-    |> CairoPort.command({:device_to_user, [context.handle, x / 1, y / 1]})
+    |> CairoPort.command({:device_to_user, [context.handle, x, y]})
     |> case do
       {:ok, [x1, y1]} -> {:ok, {x1, y1}}
       error -> error
@@ -96,9 +99,10 @@ defmodule CairoEx.Context do
   """
   @spec device_to_user_distance(context :: Ref.t(), dx :: float(), dy :: float()) ::
           {:ok, CairoEx.vector()} | {:error, CairoEx.error_reason()}
-  def device_to_user_distance(%Ref{} = context, dx, dy) do
+  def device_to_user_distance(%Ref{} = context, dx, dy)
+      when is_float(dx) and is_float(dy) do
     context.port
-    |> CairoPort.command({:device_to_user_distance, [context.handle, dx / 1, dy / 1]})
+    |> CairoPort.command({:device_to_user_distance, [context.handle, dx, dy]})
     |> case do
       {:ok, [dx1, dy1]} -> {:ok, {dx1, dy1}}
       error -> error
@@ -120,24 +124,27 @@ defmodule CairoEx.Context do
   Modifies the current transformation matrix (CTM) by translating the user-space origin by (tx, ty).
   """
   @spec translate(context :: Ref.t(), tx :: float(), ty :: float()) :: Ref.t()
-  def translate(%Ref{} = context, tx, ty) do
-    chained_command(context, {:translate, [context.handle, tx / 1, ty / 1]})
+  def translate(%Ref{} = context, tx, ty)
+      when is_float(tx) and is_float(ty) do
+    chained_command(context, {:translate, [context.handle, tx, ty]})
   end
 
   @doc """
   Modifies the current transformation matrix (CTM) by scaling the X and Y user-space axes by sx and sy respectively.
   """
   @spec scale(context :: Ref.t(), sx :: float(), sy :: float()) :: Ref.t()
-  def scale(%Ref{} = context, sx, sy) do
-    chained_command(context, {:scale, [context.handle, sx / 1, sy / 1]})
+  def scale(%Ref{} = context, sx, sy)
+      when is_float(sx) and is_float(sy) do
+    chained_command(context, {:scale, [context.handle, sx, sy]})
   end
 
   @doc """
   Modifies the current transformation matrix (CTM) by rotating the user-space axes by angle radians.
   """
   @spec rotate(context :: Ref.t(), angle :: float()) :: Ref.t()
-  def rotate(%Ref{} = context, angle) do
-    chained_command(context, {:rotate, [context.handle, angle / 1]})
+  def rotate(%Ref{} = context, angle)
+      when is_float(angle) do
+    chained_command(context, {:rotate, [context.handle, angle]})
   end
 
   @doc """
@@ -170,8 +177,9 @@ defmodule CairoEx.Context do
   Sets the source pattern within the context to an opaque color.
   """
   @spec set_source_rgb(context :: Ref.t(), r :: float(), g :: float(), b :: float()) :: Ref.t()
-  def set_source_rgb(%Ref{} = context, r, g, b) do
-    chained_command(context, {:set_source_rgb, [context.handle, r / 1, g / 1, b / 1]})
+  def set_source_rgb(%Ref{} = context, r, g, b)
+      when is_float(r) and is_float(g) and is_float(b) do
+    chained_command(context, {:set_source_rgb, [context.handle, r, g, b]})
   end
 
   @doc """
@@ -184,8 +192,9 @@ defmodule CairoEx.Context do
           b :: float(),
           a :: float()
         ) :: Ref.t()
-  def set_source_rgba(%Ref{} = context, r, g, b, a) do
-    chained_command(context, {:set_source_rgba, [context.handle, r / 1, g / 1, b / 1, a / 1]})
+  def set_source_rgba(%Ref{} = context, r, g, b, a)
+      when is_float(r) and is_float(g) and is_float(b) and is_float(a) do
+    chained_command(context, {:set_source_rgba, [context.handle, r, g, b, a]})
   end
 
   @doc """
@@ -199,10 +208,15 @@ defmodule CairoEx.Context do
           angle1 :: float(),
           angle2 :: float()
         ) :: Ref.t()
-  def arc(%Ref{} = context, xc, yc, radius, angle1, angle2) do
+  def arc(%Ref{} = context, xc, yc, radius, angle1, angle2)
+      when is_float(xc) and
+             is_float(yc) and
+             is_float(radius) and
+             is_float(angle1) and
+             is_float(angle2) do
     chained_command(
       context,
-      {:arc, [context.handle, xc / 1, yc / 1, radius / 1, angle1 / 1, angle2 / 1]}
+      {:arc, [context.handle, xc, yc, radius, angle1, angle2]}
     )
   end
 
@@ -216,8 +230,12 @@ defmodule CairoEx.Context do
           width :: float(),
           height :: float()
         ) :: Ref.t()
-  def rectangle(%Ref{} = context, x, y, width, height) do
-    chained_command(context, {:rectangle, [context.handle, x / 1, y / 1, width / 1, height / 1]})
+  def rectangle(%Ref{} = context, x, y, width, height)
+      when is_float(x) and
+             is_float(y) and
+             is_float(width) and
+             is_float(height) do
+    chained_command(context, {:rectangle, [context.handle, x, y, width, height]})
   end
 
   @doc """
@@ -248,16 +266,18 @@ defmodule CairoEx.Context do
   If the current subpath is not empty, begin a new subpath.
   """
   @spec move_to(context :: Ref.t(), x :: float(), y :: float()) :: Ref.t()
-  def move_to(%Ref{} = context, x, y) do
-    chained_command(context, {:move_to, [context.handle, x / 1, y / 1 / 1]})
+  def move_to(%Ref{} = context, x, y)
+      when is_float(x) and is_float(y) do
+    chained_command(context, {:move_to, [context.handle, x, y]})
   end
 
   @doc """
   Sets the current line width within the cairo context.
   """
   @spec set_line_width(context :: Ref.t(), width :: float()) :: Ref.t()
-  def set_line_width(%Ref{} = context, width) do
-    chained_command(context, {:set_line_width, [context.handle, width / 1]})
+  def set_line_width(%Ref{} = context, width)
+      when is_float(width) do
+    chained_command(context, {:set_line_width, [context.handle, width]})
   end
 
   @doc """
