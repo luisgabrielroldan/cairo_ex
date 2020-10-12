@@ -15,4 +15,7 @@ cx_status_t strres_cairo_format_to_str(cairo_format_t format, const char **s);
 cx_status_t strres_cairo_content_from_str(const char *str, cairo_content_t *content);
 cx_status_t strres_cairo_content_to_str(cairo_content_t content, const char **s);
 
+cx_status_t strres_cairo_antialias_to_str(cairo_antialias_t content, const char** s);
+cx_status_t strres_cairo_antialias_from_str(const char *str, cairo_antialias_t *content);
+
 #endif

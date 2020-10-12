@@ -37,6 +37,10 @@ defmodule CairoEx.CairoPort do
     raise CairoEx.Error, message: "Invalid reference"
   end
 
+  defp handle_command_result({:error, :cx_invalid_argument}) do
+    raise CairoEx.Error, message: "Invalid argument"
+  end
+
   defp handle_command_result({:error, :cx_unknown_cmd}) do
     raise CairoEx.Error, message: "Unknown command"
   end

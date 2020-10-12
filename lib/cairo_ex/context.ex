@@ -305,11 +305,21 @@ defmodule CairoEx.Context do
     chained_command(context, {:restore, [context.handle]})
   end
 
+  @doc """
+  Temporarily redirects drawing to an intermediate surface known as a group.
+  The redirection lasts until the group is completed by a call to Context.pop_group/1 or
+  Context.pop_group_to_source/1. These calls provide the result of any drawing to the group as a
+  pattern.
+  """
   @spec push_group_with_content(context :: Ref.t(), content :: CairoEx.content()) :: Ref.t()
   def push_group_with_content(%Ref{} = context, content) when is_atom(content) do
     chained_command(context, {:push_group_with_content, [context.handle, content]})
   end
 
+  @doc """
+  Terminates the redirection begun by a call to Context.push_group/1 or Context.push_group_with_content/2
+  and returns a new pattern containing the results of all drawing operations performed to the group.
+  """
   @spec pop_group(context :: Ref.t()) :: {:ok, Ref.t()}
   def pop_group(%Ref{} = context) do
     case CairoPort.command(context.port, {:pop_group, [context.handle]}) do
@@ -318,6 +328,10 @@ defmodule CairoEx.Context do
     end
   end
 
+  @doc """
+  Terminates the redirection begun by a call to Context.push_group/1 or Context.push_group_with_content/2
+  and installs the resulting pattern as the source pattern in the given context.
+  """
   @spec push_group(context :: Ref.t()) :: Ref.t()
   def pop_group_to_source(%Ref{} = context) do
     chained_command(context, {:pop_group_to_source, [context.handle]})
@@ -331,10 +345,32 @@ defmodule CairoEx.Context do
     chained_command(context, {:push_group, [context.handle]})
   end
 
+  @doc """
+  Sets the dash pattern to be used by Context.stroke/1. A dash pattern is specified by dashes, an array of
+  positive values. Each value provides the length of alternate "on" and "off" portions of the stroke.
+  The offset specifies an offset into the pattern at which the stroke begins.
+  """
   @spec set_dash(context :: Ref.t(), list(float()), offset :: float()) :: Ref.t()
   def set_dash(%Ref{} = context, dashes, offset)
       when is_list(dashes) and is_float(offset) do
     chained_command(context, {:set_dash, [context.handle, dashes, offset]})
+  end
+
+  @spec set_antialias(context :: Ref.t(), antialias :: CairoEx.antialias()) :: Ref.t()
+  def set_antialias(%Ref{} = context, antialias)
+      when is_atom(antialias) do
+    chained_command(context, {:set_antialias, [context.handle, antialias]})
+  end
+
+  @spec get_antialias(context :: Ref.t()) ::
+          {:ok, CairoEx.antialias()} | {:error, CairoEx.error_reason()}
+  def get_antialias(%Ref{} = context) do
+    context.port
+    |> CairoPort.command({:get_antialias, [context.handle]})
+    |> case do
+      {:ok, antialias} -> {:ok, antialias}
+      error -> error
+    end
   end
 
   @doc """

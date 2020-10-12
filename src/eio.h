@@ -22,6 +22,7 @@ cx_status_t eio_encode_long(cx_result_t *result, long value);
 cx_status_t eio_encode_double(cx_result_t *result, double value);
 cx_status_t eio_encode_list_header(cx_result_t *result, int arity);
 cx_status_t eio_encode_empty_list(cx_result_t *result);
+cx_status_t eio_encode_atom(cx_result_t *result, const char *atom);
 
 cx_status_t eio_skip_term(const char *buf, int *index);
 cx_status_t eio_decode_arg_list(const char *buf, int *index, int nargs);

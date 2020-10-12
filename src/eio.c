@@ -139,6 +139,14 @@ cx_status_t eio_encode_double(cx_result_t *result, double value) {
     return _eio_set_status(CX_STATUS_OK);
 }
 
+cx_status_t eio_encode_atom(cx_result_t *result, const char *atom) {
+    if (ei_x_encode_atom(result, atom) != 0) {
+        return _eio_set_status(CX_STATUS_ENCODE_ERROR);
+    }
+
+    return _eio_set_status(CX_STATUS_OK);
+}
+
 cx_status_t eio_decode_atom(const char *buf, int *index, char *dest) {
     if (ei_decode_atom(buf, index, dest) != 0) {
         return _eio_set_status(CX_STATUS_DECODE_ERROR);

@@ -9,6 +9,15 @@ defmodule CairoEx do
 
   @type vector :: {x :: float(), y :: float()}
 
+  @type antialias ::
+          :default
+          | :none
+          | :gray
+          | :subpixel
+          | :fast
+          | :good
+          | :best
+
   @type content ::
           :color
           | :alpha

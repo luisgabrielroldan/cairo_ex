@@ -41,6 +41,8 @@ static method_entry_t method_table[] = {
     {"set_source_rgb", cx_set_source_rgb },
     {"set_source_rgba", cx_set_source_rgba },
     {"set_dash", cx_set_dash },
+    {"set_antialias", cx_set_antialias },
+    {"get_antialias", cx_get_antialias },
     {"status", cx_status },
     {"stroke", cx_stroke },
     // Paths
@@ -91,6 +93,9 @@ error:
     switch(err) {
     case CX_STATUS_INVALID_REFERENCE:
         return eio_encode_result_error_atom(result, "cx_invalid_reference");
+
+    case CX_STATUS_INVALID_ARG:
+        return eio_encode_result_error_atom(result, "cx_invalid_argument");
 
     case CX_STATUS_UNKNOWN_METHOD:
         return eio_encode_result_error_atom(result, "cx_unknown_cmd");

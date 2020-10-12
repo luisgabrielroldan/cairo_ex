@@ -288,7 +288,7 @@ cx_status_t cx_push_group_with_content(const char *buf, int *index, cx_result_t 
     }
 
     if (strres_cairo_content_from_str(content_buf, &content)) {
-        return strres_status();
+        return CX_STATUS_INVALID_ARG;
     }
 
     cairo_push_group_with_content(cairo, content);
@@ -313,6 +313,52 @@ cx_status_t cx_set_dash(const char *buf, int *index, cx_result_t *result)
     cairo_set_dash(cairo, dashes, (int)num_dashes, offset);
 
     return eio_encode_result_ok(result);
+}
+
+cx_status_t cx_set_antialias(const char *buf, int *index, cx_result_t *result)
+{
+    void *cairo;
+    char antialias_buf[MAXATOMLEN];
+    cairo_antialias_t antialias;
+
+    if (eio_decode_arg_list(buf, index, 2) ||
+            eio_decode_arg_resource(buf, index, RES_TYPE_CONTEXT, &cairo) ||
+            eio_decode_atom(buf, index, antialias_buf)) {
+        return eio_status();
+    }
+
+    if (strres_cairo_antialias_from_str(antialias_buf, &antialias)) {
+        return CX_STATUS_INVALID_ARG;
+    }
+
+    cairo_set_antialias(cairo, antialias);
+
+    return eio_encode_result_ok(result);
+}
+
+cx_status_t cx_get_antialias(const char *buf, int *index, cx_result_t *result)
+{
+    void *cairo;
+    cairo_antialias_t antialias;
+    const char *antialias_str;
+
+    if (eio_decode_arg_list(buf, index, 1) ||
+            eio_decode_arg_resource(buf, index, RES_TYPE_CONTEXT, &cairo)) {
+        return eio_status();
+    }
+
+    antialias = cairo_get_antialias(cairo);
+
+    if (strres_cairo_antialias_to_str(antialias, &antialias_str)) {
+        return strres_status();
+    }
+
+    if (eio_encode_result_ok_tuple_header(result) ||
+            eio_encode_atom(result, antialias_str)) {
+        return eio_status();
+    }
+
+    return CX_STATUS_OK;
 }
 
 

@@ -7,6 +7,7 @@ cx_status_t cx_surface_image_surface_create(const char *buf, int *index, cx_resu
 {
     char format_atom[16];
     long width, height;
+    const char *status_str;
 
     if (eio_decode_arg_list(buf, index, 3) ||
             eio_decode_atom(buf, index, format_atom) ||
@@ -27,7 +28,11 @@ cx_status_t cx_surface_image_surface_create(const char *buf, int *index, cx_resu
     }
 
     cairo_status_t status = cairo_surface_status(NULL);
-    return eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+    if (strres_cairo_status_to_str(status, &status_str)) {
+        return strres_status();
+    }
+
+    return eio_encode_result_error_atom(result, status_str);
 }
 
 cx_status_t cx_surface_write_to_png (const char *buf, int *index, cx_result_t *result)
@@ -36,6 +41,7 @@ cx_status_t cx_surface_write_to_png (const char *buf, int *index, cx_result_t *r
     void *ptr;
     cairo_status_t status;
     char *filename = NULL;
+    const char *status_str;
 
     if (eio_decode_arg_list(buf, index, 2) ||
             eio_decode_arg_resource(buf, index, RES_TYPE_SURFACE, &ptr) ||
@@ -47,7 +53,15 @@ cx_status_t cx_surface_write_to_png (const char *buf, int *index, cx_result_t *r
     err = CX_STATUS_OK;
 
     if ((status = cairo_surface_write_to_png(ptr, filename)) != CAIRO_STATUS_SUCCESS) {
-        eio_encode_result_error_atom(result, strres_cairo_status_to_str(status));
+        if (strres_cairo_status_to_str(status, &status_str)) {
+            err = strres_status();
+            goto done;
+        }
+
+        if (eio_encode_result_error_atom(result, status_str)) {
+            err = eio_status();
+        }
+
         goto done;
     }
 

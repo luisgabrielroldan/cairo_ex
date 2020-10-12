@@ -167,3 +167,47 @@ cx_status_t strres_cairo_content_to_str(cairo_content_t content, const char** s)
     return _strres_set_status(CX_STATUS_ENCODE_ERROR);
 }
 
+/********************************************************
+ * cairo_antialias_t
+ ********************************************************/
+
+#define TABLE_SIZE_CAIRO_ANTIALIAS 7
+
+typedef struct {
+    cairo_antialias_t value;
+    const char *name;
+} cairo_antialias_item_t;
+
+static cairo_antialias_item_t cairo_antialias_table[TABLE_SIZE_CAIRO_ANTIALIAS] = {
+    {CAIRO_ANTIALIAS_DEFAULT, "default"},
+    {CAIRO_ANTIALIAS_NONE, "none"},
+    {CAIRO_ANTIALIAS_GRAY, "gray"},
+    {CAIRO_ANTIALIAS_SUBPIXEL, "subpixel"},
+    {CAIRO_ANTIALIAS_FAST, "fast"},
+    {CAIRO_ANTIALIAS_GOOD, "good"},
+    {CAIRO_ANTIALIAS_BEST, "best"},
+};
+
+cx_status_t strres_cairo_antialias_from_str(const char *str, cairo_antialias_t *content)
+{
+    for (int i = 0; i < TABLE_SIZE_CAIRO_ANTIALIAS; i++) {
+        if (strcmp(cairo_antialias_table[i].name, str) == 0 ) {
+            *content = cairo_antialias_table[i].value;
+            return _strres_set_status(CX_STATUS_OK);
+        }
+    }
+
+    return _strres_set_status(CX_STATUS_DECODE_ERROR);
+}
+
+cx_status_t strres_cairo_antialias_to_str(cairo_antialias_t content, const char** s)
+{
+    for (int i = 0; i < TABLE_SIZE_CAIRO_ANTIALIAS; i++) {
+        if (cairo_antialias_table[i].value == content) {
+            *s = cairo_antialias_table[i].name;
+            return _strres_set_status(CX_STATUS_OK);
+        }
+    }
+
+    return _strres_set_status(CX_STATUS_ENCODE_ERROR);
+}

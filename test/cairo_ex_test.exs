@@ -14,6 +14,7 @@ defmodule CairoExTest do
     assert {:ok, context} = Context.create(surface)
 
     context
+    |> Context.set_antialias(:best)
     |> Context.set_source_rgb(1.0, 1.0, 1.0)
     |> Context.paint()
     |> Context.move_to(50.0, 60.0)
@@ -22,6 +23,8 @@ defmodule CairoExTest do
     |> Context.set_source_rgb(1.0, 0.0, 0.0)
     |> Context.set_dash([1.0, 5.0], 0.0)
     |> Context.stroke()
+
+    assert {:ok, :best} = Context.get_antialias(context)
 
     assert {:ok, ^surface} = Context.get_target(context)
     Context.destroy(context)
