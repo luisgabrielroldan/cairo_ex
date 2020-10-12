@@ -112,7 +112,7 @@ defmodule CairoEx.Context do
   @doc """
   Returns the current transformation matrix (CTM).
   """
-  @spec get_matrix(context :: Ref.t()) :: Matrix.t()
+  @spec get_matrix(context :: Ref.t()) :: {:ok, Matrix.t()}
   def get_matrix(%Ref{} = context) do
     case CairoPort.command(context.port, {:get_matrix, [context.handle]}) do
       {:ok, m} -> {:ok, Matrix.from_list(m)}
@@ -332,7 +332,7 @@ defmodule CairoEx.Context do
   Terminates the redirection begun by a call to Context.push_group/1 or Context.push_group_with_content/2
   and installs the resulting pattern as the source pattern in the given context.
   """
-  @spec push_group(context :: Ref.t()) :: Ref.t()
+  @spec pop_group_to_source(context :: Ref.t()) :: Ref.t()
   def pop_group_to_source(%Ref{} = context) do
     chained_command(context, {:pop_group_to_source, [context.handle]})
   end
