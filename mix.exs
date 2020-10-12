@@ -10,6 +10,7 @@ defmodule CairoEx.MixProject do
       version: @version,
       description: description(),
       package: package(),
+      dialyzer: dialyzer(),
       elixir: "~> 1.10",
       docs: docs(),
       start_permanent: Mix.env() == :prod,
@@ -54,8 +55,16 @@ defmodule CairoEx.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
+      {:dialyxir, "~> 1.0", only: [:dev], runtime: false},
       {:elixir_make, "~> 0.6", runtime: false},
       {:ex_doc, "~> 0.22", only: :dev, runtime: false}
+    ]
+  end
+
+  def dialyzer do
+      [
+      plt_core_path: "priv/plts",
+      plt_file: {:no_warn, "priv/plts/dialyzer.plt"}
     ]
   end
 

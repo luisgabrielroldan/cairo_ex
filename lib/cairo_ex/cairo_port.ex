@@ -1,7 +1,7 @@
 defmodule CairoEx.CairoPort do
   @moduledoc false
 
-  @type t :: GenServer.t()
+  @type t :: GenServer.server()
 
   @packet_log_message 0x10
   @packet_cmd_result 0x20
